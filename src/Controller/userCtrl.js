@@ -17,7 +17,7 @@ const userCtrl = {
             
         } catch (error) {
             console.log(error);
-            res.status(503).send({message: error.message})            
+            res.status(503).send({message: error.message})         
         }
     }
 }
