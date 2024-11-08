@@ -1,17 +1,7 @@
 const mongoose = require('mongoose');
 
-const spacialConstructionSchema = new mongoose.Schema(
+const repairServicesSchema = new mongoose.Schema(
     {
-        authorId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
-            required: true
-        },
-        subCategoryId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'SubCategory',
-            required: true
-        },
         bodyType: {
             type: String,
             required: true,
@@ -21,34 +11,17 @@ const spacialConstructionSchema = new mongoose.Schema(
             ref: 'Marka',
             required: true
         },
-        model: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'MarkaModels',
-            required: true
-        },
-        year: {
+        adName: {
             type: String,
             required: true
         },
-        price: {
+        typeOfService: {
             type: String,
             required: true
         },
         thereIsLittle: {
             enum: 'Ha',
             default: "Ha"
-        },
-        feulType: {
-            type: String,
-            required: true
-        },
-        typeOfSeats: {
-            type: String,
-            required: true
-        },
-        km: {
-            type: Number,
-            required: true
         },
         description: {
             type: String,
@@ -76,10 +49,7 @@ const spacialConstructionSchema = new mongoose.Schema(
         type: {
             default: true
         }
-    },
-    {
-        timestamps: true,
     }
 )
 
-module.exports = mongoose.model('SpacialConstruction', spacialConstructionSchema);
+module.exports = mongoose.model('RepairServices', repairServicesSchema);
