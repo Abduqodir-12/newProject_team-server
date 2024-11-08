@@ -2,6 +2,7 @@ const express = require('express');
 const fileUpload = require('express-fileupload');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const mongoose = require('mongoose')
 
 dotenv.config()
 
@@ -18,13 +19,13 @@ app.use(fileUpload());
 app.use(cors());
 
 // routes usage
-app.use('api/user/', userRouter)
+app.use('/api/user', userRouter)
 
 const MONGO_URL = process.env.MONGO_URL;
 
 mongoose.connect(MONGO_URL, {}).then(() => {
     console.log('Connect to DB');
-    server.listen(PORT, () => console.log(`server running on port: ${PORT}`))
+    app.listen(PORT, () => console.log(`server running on port: ${PORT}`))
 }).catch(error => {
     console.log(error);
 })

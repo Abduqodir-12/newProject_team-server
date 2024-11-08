@@ -20,7 +20,8 @@ const repairServicesSchema = new mongoose.Schema(
             required: true
         },
         thereIsLittle: {
-            enum: 'Ha',
+            type: String,
+            enum: ['Ha', 'Yoq'],
             default: "Ha"
         },
         description: {

@@ -35,7 +35,8 @@ const spacialConstructionSchema = new mongoose.Schema(
             required: true
         },
         thereIsLittle: {
-            enum: 'Ha',
+            type: String,
+            enum: ['Ha', 'Yoq'],
             default: "Ha"
         },
         feulType: {
