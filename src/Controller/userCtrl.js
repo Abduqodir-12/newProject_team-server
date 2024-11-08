@@ -24,7 +24,7 @@ const userCtrl = {
 
             const savedUser = await newUser.save();
 
-            const token = JWT.sign({ userId: savedUser._id, role: savedUser.role }, process.env.JWT_SECRET, { expiresIn: '1d' });
+            const token = JWT.sign({ userId: savedUser._id, role: savedUser.role }, process.env.JWT_SECRET_KEY, { expiresIn: '1d' });
             res.status(201).send({message: "User registered successfully", token, user: savedUser});
         } catch (error) {
             console.log(error);
