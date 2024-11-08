@@ -26,13 +26,21 @@ const userCtrl = {
                 role,
             });
 
-            const {password, ...otherDetails} = newUser._doc
+            const {password, ...otherDetails} = newUser._doc;
 
             const token = JWT.sign({ userId: savedUser._id, role: savedUser.role }, process.env.JWT_SECRET_KEY, { expiresIn: '1d' });
             res.status(201).send({message: "User registered successfully", user: savedUser, token});
         } catch (error) {
             console.log(error);
             res.status(503).send({ message: error.message });
+        }
+    },
+    login: async (req, res) => {
+        try {
+            
+        } catch (error) {
+            console.log(error);
+            res.status(503).send({message: error.message})            
         }
     }
 };
