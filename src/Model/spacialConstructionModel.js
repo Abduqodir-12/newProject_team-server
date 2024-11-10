@@ -72,9 +72,11 @@ const spacialConstructionSchema = new mongoose.Schema(
             required: true
         },
         active: {
+            type: Boolean,
             default: true
         },
         type: {
+            type: Boolean,
             default: true
         }
     },

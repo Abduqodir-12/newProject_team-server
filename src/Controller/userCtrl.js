@@ -1,10 +1,10 @@
 const bcrypt = require('bcrypt')
 const JWT = require('jsonwebtoken')
-const User = require('../model/userModel')
-const Transport = require('../model/transportModel')
-const SpacialConstruction = require('../model/spacialConstructionModel')
-const RepairServices = require('../model/repairServices')
-const SparePartsAndGoods = require('../model/SparePartsAndGoodsModel')
+const User = require('../Model/userModel')
+const Transport = require('../Model/transportModel')
+const SpacialConstruction = require('../Model/spacialConstructionModel')
+const RepairServices = require('../Model/repairServices')
+const SparePartsAndGoods = require('../Model/sparePertsAndGoodModel')
 
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 

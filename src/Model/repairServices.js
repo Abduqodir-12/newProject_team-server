@@ -45,9 +45,11 @@ const repairServicesSchema = new mongoose.Schema(
             required: true
         },
         active: {
+            type: Boolean,
             default: true
         },
         type: {
+            type: Boolean,
             default: true
         }
     }
