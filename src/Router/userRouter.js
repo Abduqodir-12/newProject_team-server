@@ -1,8 +1,12 @@
+const userCtrl = require('../Controller/userCtrl')
+const middlewear = require('../middlewear/middleware')
+
 const router = require('express').Router()
 
-const userCtrl = require('../Controller/userCtrl');
+router.post('/signup', userCtrl.signup)
+router.post('/login', userCtrl.login)
+router.get('/users', userCtrl.getAll)
+router.get("/:userId", userCtrl.getOneUser);
+router.delete('/:userId', middlewear, userCtrl.deleteUser)
 
-router.post('/signup', userCtrl.signup);
-// router.post('/login', userCtrl.login);
-
-module.exports = router;
+module.exports = router
