@@ -12,6 +12,7 @@ const PORT = process.env.PORT || 4001;
 
 // routes
 const userRouter = require('./src/Router/userRouter')
+const tranportRouter = require('./src/Router/transportRouter')
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -20,6 +21,7 @@ app.use(cors());
 
 // routes usage
 app.use('/api/user', userRouter)
+app.use('/api/transport', tranportRouter)
 
 const MONGO_URL = process.env.MONGO_URL;
 
