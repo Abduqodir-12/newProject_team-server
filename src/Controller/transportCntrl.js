@@ -66,6 +66,23 @@ const transportCtrl = {
             console.log(error);
             res.status(503).send({ message: error.message });
         }
+    },
+
+    getOneTransport: async (req, res) => {
+        try {
+            let transport = await Transport.findById(id);
+
+            if (!transport) {
+                    return res.status(404).json({ message: "Not found" });
+                }
+
+            const { password, ...otherDetails } = transport._doc;
+
+            res.status(200).json({ message: "Transport info", transport: otherDetails });
+        } catch (error) {
+            console.log(error);
+            res.status(503).send({message: error.message})
+        }
     }
 }
 
