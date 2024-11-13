@@ -11,7 +11,7 @@ cloudinary.config({
 
 const removeTemp = (path) => {
     fs.unlink(path, err => {
-        if(err) throw err
+        if (err) throw err
     })
 }
 
@@ -19,33 +19,33 @@ const transportCtrl = {
     createTransport: async (req, res) => {
         try {
             const { author_id, subCategoryId, marka, model, bodyType, year, price, negotiable, engineSize, transmission, mileage, color, paintCondition, exterior, lights, interior, carOptions, additionalInfo, extraInfo, city, region, active, contactNumber } = req.body;
-            
-            const {images} = req.files;
 
-            const newTransport = new Transport({author_id, subCategoryId, marka, model, bodyType, year, price, negotiable, engineSize, transmission, mileage, color, paintCondition, exterior, lights, interior, carOptions, additionalInfo, extraInfo, city, region, active, contactNumber});
-                
+            const { images } = req.files;
+
+            const newTransport = new Transport({ author_id, subCategoryId, marka, model, bodyType, year, price, negotiable, engineSize, transmission, mileage, color, paintCondition, exterior, lights, interior, carOptions, additionalInfo, extraInfo, city, region, active, contactNumber });
+
 
             const result = await cloudinary.v2.uploader.upload(
                 images.tempFilePath,
                 {
-                folder: "AvtoElon",
+                    folder: "AvtoElon",
                 },
                 async (err, result) => {
-                if (err) {
-                    throw err;
-                }
+                    if (err) {
+                        throw err;
+                    }
 
-                removeTemp(images.tempFilePath);
+                    removeTemp(images.tempFilePath);
 
-                return result;
+                    return result;
                 }
             );
 
             const image = { url: result.secure_url, public_id: result.public_id };
 
-            const createTransport = await Transport.create({newTransport, image});
+            const createTransport = await Transport.create({ newTransport, image });
 
-            res.status(201).send({message: 'Transport created successfully', transport: createTransport});
+            res.status(201).send({ message: 'Transport created successfully', transport: createTransport });
         } catch (error) {
             console.log(error);
             res.status(503).send({ message: error.message });
@@ -73,15 +73,15 @@ const transportCtrl = {
             let transport = await Transport.findById(id);
 
             if (!transport) {
-                    return res.status(404).json({ message: "Not found" });
-                }
+                return res.status(404).json({ message: "Not found" });
+            }
 
             const { password, ...otherDetails } = transport._doc;
 
             res.status(200).json({ message: "Transport info", transport: otherDetails });
         } catch (error) {
             console.log(error);
-            res.status(503).send({message: error.message})
+            res.status(503).send({ message: error.message })
         }
     }
 }
