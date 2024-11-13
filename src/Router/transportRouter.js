@@ -1,4 +1,4 @@
-const transportCtrl = require('../Controller/transportCntrl')
+const transportCtrl = require('../Controller/transportCtrl')
 const middlewear = require('../midleware/midleware')
 
 const tranportRouter = require('express').Router()
