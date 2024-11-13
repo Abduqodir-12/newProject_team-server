@@ -56,11 +56,6 @@ const transportCtrl = {
         try {
             let transports = await Transport.find()
 
-            transports = transports.map((user) => {
-                const { password, ...otherDetails } = user._doc;
-                return otherDetails;
-            });
-
             res.status(200).send({ message: "All transports", transports })
         } catch (error) {
             console.log(error);
@@ -70,15 +65,14 @@ const transportCtrl = {
 
     getOneTransport: async (req, res) => {
         try {
-            let transport = await Transport.findById(id);
+            const { id } = req.params
+            let transport = await Transport.findOne({ _id: id });
 
             if (!transport) {
                 return res.status(404).json({ message: "Not found" });
             }
 
-            const { password, ...otherDetails } = transport._doc;
-
-            res.status(200).json({ message: "Transport info", transport: otherDetails });
+            res.status(200).json({ message: "Transport info", transport });
         } catch (error) {
             console.log(error);
             res.status(503).send({ message: error.message })
