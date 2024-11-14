@@ -43,6 +43,23 @@ const motoTechnicsCtrl = {
             console.log(error);
             res.status(503).send({message: error.message})
         }
+    },
+
+    deleteMoto: async (req, res) => {
+        try {
+            const { id } = req.params;
+
+            const deletedMoto = await Motorcycle.findByIdAndDelete(id);
+
+            if (!deletedMoto) {
+                return res.status(404).json({ message: "Motorcycle not found" });
+            }
+
+            res.status(200).json({ message: "Deleted successfully", motorcycle: deletedMoto });
+        } catch (error) {
+            console.log(error);
+            res.status(503).send({message: error.message})
+        }
     }
 }
 
