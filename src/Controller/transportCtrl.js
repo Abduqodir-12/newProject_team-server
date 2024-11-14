@@ -18,11 +18,11 @@ const removeTemp = (path) => {
 const transportCtrl = {
     createTransport: async (req, res) => {
         try {
-            const { author_id, subCategoryId, marka, model, bodyType, year, price, negotiable, engineSize, transmission, mileage, color, paintCondition, exterior, lights, interior, carOptions, additionalInfo, extraInfo, city, region, active, contactNumber } = req.body;
+            const { author_id, subCategoryId, marka, model, bodyType, year, price, mileage, color, city, region, active, contactNumber } = req.body;
 
             const { images } = req.files;
 
-            const newTransport = new Transport({ author_id, subCategoryId, marka, model, bodyType, year, price, negotiable, engineSize, transmission, mileage, color, paintCondition, exterior, lights, interior, carOptions, additionalInfo, extraInfo, city, region, active, contactNumber });
+            const newTransport = new Transport({ author_id, subCategoryId, marka, model, bodyType, year, price, mileage, color, city, region, active, contactNumber });
 
 
             const result = await cloudinary.v2.uploader.upload(
