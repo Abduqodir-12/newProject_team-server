@@ -13,6 +13,7 @@ const PORT = process.env.PORT || 4001;
 // routes
 const userRouter = require('./src/Router/userRouter')
 const tranportRouter = require('./src/Router/transportRouter')
+const motoTechnicsRouter = require('./src/Router/motoTechnicsRouter')
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -22,6 +23,7 @@ app.use(cors());
 // routes usage
 app.use('/api/user', userRouter)
 app.use('/api/transport', tranportRouter)
+app.use('/api/moto', motoTechnicsRouter)
 
 const MONGO_URL = process.env.MONGO_URL;
 
