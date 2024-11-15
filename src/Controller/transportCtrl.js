@@ -25,24 +25,23 @@ const transportCtrl = {
                 return res.status(404).send({ message: "Fill in the gaps!" })
             }
 
-            const result = await cloudinary.v2.uploader.upload(
-                images.tempFilePath,
-                {
-                    folder: "AvtoElon",
-                },
-                async (err, result) => {
-                    if (err) {
-                        throw err;
-                    }
+            if (req.files.images) {
+                const { images } = req.files;
+                const result = await cloudinary.v2.uploader.upload(
+                    images.map(image => {
+                        image.tempFilePath, { folder: "AvtoelonBeta" }, async (err, result) => {
+                            if (err) {
+                                throw err
+                            }
+                            revomeTemp(image.tempFilePath)
+                            return { url: result.secure_url, public_id: result.public_id }
+                        }
+                    })
+                )
+                return result
+            }
 
-                    removeTemp(images.tempFilePath);
-
-                    return result;
-                }
-            );
-
-            const image = { url: result.secure_url, public_id: result.public_id };
-            req.body.image = image
+            req.body.images = result
             const createTransport = await Transport.create(req.body);
 
             res.status(201).send({ message: 'Transport created successfully', transport: createTransport });
