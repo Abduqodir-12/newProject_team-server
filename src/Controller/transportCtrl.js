@@ -22,7 +22,7 @@ const transportCtrl = {
 
             const { images } = req.files;
 
-            const newTransport = new Transport({ author_id, subCategoryId, marka, model, bodyType, year, price, mileage, color, city, region, active, contactNumber });
+            const newTransport = new Transport(req.body);
 
 
             const result = await cloudinary.v2.uploader.upload(
