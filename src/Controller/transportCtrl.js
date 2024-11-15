@@ -18,12 +18,12 @@ const removeTemp = (path) => {
 const transportCtrl = {
     createTransport: async (req, res) => {
         try {
-            const { author_id, subCategoryId, marka, model, bodyType, year, price, mileage, color, city, region, active, contactNumber } = req.body;
-
+            const { author_id, subCategoryId, marka, model, bodyType, year, price, color, city, region, active, contactNumber } = req.body;
             const { images } = req.files;
 
-            const newTransport = new Transport(req.body);
-
+            if(!author_id || !subCategoryId || !marka || !model || !bodyType || !year || !price || !color || !city || !region || !active || !contactNumber) {
+                return res.status(404).send({ message: "Fill in the gaps!" })
+            }
 
             const result = await cloudinary.v2.uploader.upload(
                 images.tempFilePath,
@@ -42,8 +42,8 @@ const transportCtrl = {
             );
 
             const image = { url: result.secure_url, public_id: result.public_id };
-
-            const createTransport = await Transport.create({ newTransport, image });
+            req.body.image = image
+            const createTransport = await Transport.create(req.body);
 
             res.status(201).send({ message: 'Transport created successfully', transport: createTransport });
         } catch (error) {
