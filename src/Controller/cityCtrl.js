@@ -6,12 +6,12 @@ const cityCtrl = {
             const { regionId, title } = req.body;
 
             if (!regionId || !title) {
-                return res.status(404).send({ message: "Title is required" })
+                return res.status(404).send({ message: "Title is required" });
             }
 
             if (req.userIsAdmin) {
-                const newCity = await City.create(req.body)
-                return res.status(201).send({ message: "Created city", city: newCity })
+                const newCity = await City.create(req.body);
+                return res.status(201).send({ message: "Created city", city: newCity });
             }
         } catch (error) {
             console.log(error.message);
@@ -24,13 +24,13 @@ const cityCtrl = {
             const { title } = req.body;
 
             if (!title) {
-                return res.status(404).send({ message: "Title is required" })
+                return res.status(404).send({ message: "Title is required" });
             }
 
-            const city = await City.findById(id)
+            const city = await City.findById(id);
 
             if (!city) {
-                return res.status(404).send({ message: "Not found category" })
+                return res.status(404).send({ message: "Not found category" });
             }
 
             if (req.userIsAdmin) {
@@ -40,7 +40,7 @@ const cityCtrl = {
                     { new: true }
                 )
 
-                return res.status(200).send({ message: "City updated!", city: updateCity })
+                return res.status(200).send({ message: "City updated!", city: updateCity });
             }
         } catch (error) {
             console.log(error.message);
@@ -52,10 +52,10 @@ const cityCtrl = {
             const { cityId } = req.params
             const getOneCity = await Category.findOne({ _id: cityId });
             if (!getOneCity) {
-                return res.status(404).send({ message: "Not found city!" })
+                return res.status(404).send({ message: "Not found city!" });
             }
 
-            res.status(200).send({ message: "Found city", city: getOneCity })
+            res.status(200).send({ message: "Found city", city: getOneCity });
         } catch (error) {
             console.log(error.message);
             res.status(503).send({ message: error.message });
@@ -63,8 +63,8 @@ const cityCtrl = {
     },
     getAllCity: async (req, res) => {
         try {
-            const cities = await City.find()
-            res.status(200).send({ message: "Cities", cities })
+            const cities = await City.find();
+            res.status(200).send({ message: "Cities", cities });
         } catch (error) {
             console.log(error.message);
             res.status(503).send({ message: error.message });

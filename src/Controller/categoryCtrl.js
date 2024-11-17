@@ -1,11 +1,11 @@
 const Category = require('../Model/categoryModel');
-const SubCategory = require('../Model/subCategory')
-const Transport = require('../Model/transportModel')
-const SpacialConstruction = require('../Model/spacialConstructionModel')
-const RepairServices = require('../Model/repairServices')
-const SparePartsAndGoods = require('../Model/sparePertsAndGoodModel')
-const Motorcycle = require('../Model/motoTechnicsModel')
-const WaterTransport = require('../Model/waterTransportModel')
+const SubCategory = require('../Model/subCategory');
+const Transport = require('../Model/transportModel');
+const SpacialConstruction = require('../Model/spacialConstructionModel');
+const RepairServices = require('../Model/repairServices');
+const SparePartsAndGoods = require('../Model/sparePertsAndGoodModel');
+const Motorcycle = require('../Model/motoTechnicsModel');
+const WaterTransport = require('../Model/waterTransportModel');
 
 const categoryCtrl = {
     addCategory: async (req, res) => {
