@@ -17,6 +17,7 @@ const motoTechnicsRouter = require('./src/Router/motoTechnicsRouter')
 const cityRouter = require('./src/Router/cityRouter')
 const regionRouter = require('./src/Router/regionRouter')
 const categoryRouter = require('./src/Router/categoryRouter')
+const subCategoryRouter = require('./src/Router/subCategoryRouter')
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -30,6 +31,7 @@ app.use('/api/moto', motoTechnicsRouter)
 app.use('/api/city', cityRouter)
 app.use('/api/region', regionRouter)
 app.use('/api/category', categoryRouter)
+app.use('/api/subCategory', subCategoryRouter)
 
 const MONGO_URL = process.env.MONGO_URL;
 
