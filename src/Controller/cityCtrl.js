@@ -1,4 +1,4 @@
-const City = require("../model/cityModel");
+const City = require("../Model/cityModel");
 
 const cityCtrl = {
     addCity: async (req, res) => {

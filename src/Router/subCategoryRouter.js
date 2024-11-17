@@ -1,5 +1,5 @@
-const subCategoryCtrl = require('../controller/subCategoryCtrl')
-const middlewear = require('../middlewear/middleware')
+const subCategoryCtrl = require('../Controller/subCategoryCtrl')
+const middlewear = require('../midleware/midleware')
 
 const router = require('express').Router()
 

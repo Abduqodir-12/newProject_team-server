@@ -1,4 +1,4 @@
-const Region = require("../model/regionModel");
+const Region = require("../Model/regionModel");
 
 const regionCtrl = {
     addRegion: async (req, res) => {

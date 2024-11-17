@@ -1,11 +1,11 @@
-const Category = require('../model/categoryModel');
-const SubCategory = require('../model/subCategoryModel')
-const Transport = require('../model/transportModel')
-const SpacialConstruction = require('../model/spacialConstructionModel')
-const RepairServices = require('../model/repairServices')
-const SparePartsAndGoods = require('../model/SparePartsAndGoodsModel')
-const Motorcycle = require('../model/MototechnicsModel')
-const WaterTransport = require('../model/waterTransportModel')
+const Category = require('../Model/categoryModel');
+const SubCategory = require('../Model/subCategory')
+const Transport = require('../Model/transportModel')
+const SpacialConstruction = require('../Model/spacialConstructionModel')
+const RepairServices = require('../Model/repairServices')
+const SparePartsAndGoods = require('../Model/sparePertsAndGoodModel')
+const Motorcycle = require('../Model/motoTechnicsModel')
+const WaterTransport = require('../Model/waterTransportModel')
 
 const categoryCtrl = {
     addCategory: async (req, res) => {
@@ -24,14 +24,14 @@ const categoryCtrl = {
         }
     },
 
-    getAllCategory: async (req, res) => {
-        try {
+    // getAllCategory: async (req, res) => {
+    //     try {
             
-        } catch (error) {
-            console.log(error);
-            res.status(503).send({message: error.message})            
-        }
-    },
+    //     } catch (error) {
+    //         console.log(error);
+    //         res.status(503).send({message: error.message})            
+    //     }
+    // },
     deleteCategory: async (req, res) => {
         try {
             const { categoryId } = req.params;
