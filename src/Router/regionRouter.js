@@ -1,4 +1,4 @@
-const regionCtrl = require('../controller/regionCtrl')
+const regionCtrl = require('../Controller/regionCtrl')
 const middlewear = require('../midleware/midleware')
 
 const router = require('express').Router()

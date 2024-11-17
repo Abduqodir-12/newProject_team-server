@@ -23,6 +23,15 @@ const categoryCtrl = {
             console.log(error.message);
         }
     },
+
+    getAllCategory: async (req, res) => {
+        try {
+            
+        } catch (error) {
+            console.log(error);
+            res.status(503).send({message: error.message})            
+        }
+    },
     deleteCategory: async (req, res) => {
         try {
             const { categoryId } = req.params;

@@ -16,6 +16,7 @@ const tranportRouter = require('./src/Router/transportRouter')
 const motoTechnicsRouter = require('./src/Router/motoTechnicsRouter')
 const cityRouter = require('./src/Router/cityRouter')
 const regionRouter = require('./src/Router/regionRouter')
+const categoryRouter = require('./src/Router/categoryRouter')
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

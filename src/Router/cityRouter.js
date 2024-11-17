@@ -1,4 +1,4 @@
-const cityCtrl = require('../controller/cityCtrl');
+const cityCtrl = require('../Controller/cityCtrl');
 const middlewear = require('../midleware/midleware')
 
 const router = require('express').Router()
