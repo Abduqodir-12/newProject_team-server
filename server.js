@@ -14,6 +14,8 @@ const PORT = process.env.PORT || 4001;
 const userRouter = require('./src/Router/userRouter')
 const tranportRouter = require('./src/Router/transportRouter')
 const motoTechnicsRouter = require('./src/Router/motoTechnicsRouter')
+const cityRouter = require('./src/Router/cityRouter')
+const regionRouter = require('./src/Router/regionRouter')
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -24,6 +26,8 @@ app.use(cors());
 app.use('/api/user', userRouter)
 app.use('/api/transport', tranportRouter)
 app.use('/api/moto', motoTechnicsRouter)
+app.use('/api/city', cityRouter)
+app.use('/api/region', regionRouter)
 
 const MONGO_URL = process.env.MONGO_URL;
 
