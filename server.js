@@ -29,6 +29,7 @@ app.use('/api/transport', tranportRouter)
 app.use('/api/moto', motoTechnicsRouter)
 app.use('/api/city', cityRouter)
 app.use('/api/region', regionRouter)
+app.use('/api/category', categoryRouter)
 
 const MONGO_URL = process.env.MONGO_URL;
 
