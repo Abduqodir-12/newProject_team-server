@@ -10,10 +10,14 @@ const WaterTransport = require('../Model/waterTransportModel');
 const categoryCtrl = {
     addCategory: async (req, res) => {
         try {
+            console.log(req.body.title);
+            
             if (!req.body.title) {
                 return res.status(404).send({ message: "Title is required!" })
             }
 
+            console.log(req.userIsAdmin);
+            
             if (req.userIsAdmin) {
                 const newCategory = await Category.create(title);
                 return res.status(201).send({ message: "Category created!", category: newCategory })
