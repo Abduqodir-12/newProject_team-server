@@ -9,11 +9,11 @@ const WaterTransport = require('../Model/waterTransportModel');
 
 const categoryCtrl = {
     addCategory: async (req, res) => {
-        try {            
+        try {
             if (!req.body.title) {
                 return res.status(404).send({ message: "Title is required!" })
             }
-            
+
             if (req.userIsAdmin) {
                 const newCategory = await Category.create(req.body);
                 return res.status(201).send({ message: "Category created!", category: newCategory })
@@ -31,15 +31,15 @@ const categoryCtrl = {
             res.status(200).send({ message: "All category", categorys })
         } catch (error) {
             console.log(error);
-            res.status(503).send({message: error.message})            
+            res.status(503).send({ message: error.message })
         }
     },
     deleteCategory: async (req, res) => {
         try {
             const { categoryId } = req.params;
-            const subCategories = await Category.findOne({ _id: categoryId })
-            
-            if (subCategories) {
+
+            const subCategories = await SubCategory.find({ categoryId: categoryId })
+            if (subCategories.length > 0) {
                 if (req.userIsAdmin) {
                     subCategories.forEach(async subCategory => {
                         const deleteTransports = await Transport.find({ subCategoryId: subCategory._id });
@@ -52,7 +52,7 @@ const categoryCtrl = {
                         deleteTransports.forEach(async deleteTransport => {
                             if (deleteTransport?.image?.public_id) {
                                 await cloudinary.v2.uploader.destroy(
-                                    car.image.public_id,
+                                    deleteTransport.image.public_id,
                                     async (err) => {
                                         if (err) {
                                             throw err;
@@ -66,7 +66,7 @@ const categoryCtrl = {
                         deleteSpacialConstructions.forEach(async deleteSpacialConstruction => {
                             if (deleteSpacialConstruction?.image?.public_id) {
                                 await cloudinary.v2.uploader.destroy(
-                                    car.image.public_id,
+                                    deleteSpacialConstruction.image.public_id,
                                     async (err) => {
                                         if (err) {
                                             throw err;
@@ -80,7 +80,7 @@ const categoryCtrl = {
                         deleteRepairServices.forEach(async deleteRepairService => {
                             if (deleteRepairService?.image?.public_id) {
                                 await cloudinary.v2.uploader.destroy(
-                                    car.image.public_id,
+                                    deleteRepairService.image.public_id,
                                     async (err) => {
                                         if (err) {
                                             throw err;
@@ -94,7 +94,7 @@ const categoryCtrl = {
                         deleteSparePartsAndGoods.forEach(async deleteSparePartsAndGood => {
                             if (deleteSparePartsAndGood?.image?.public_id) {
                                 await cloudinary.v2.uploader.destroy(
-                                    car.image.public_id,
+                                    deleteSparePartsAndGood.image.public_id,
                                     async (err) => {
                                         if (err) {
                                             throw err;
@@ -106,9 +106,9 @@ const categoryCtrl = {
                         })
 
                         deleteMotorcyclies.forEach(async deleteMotorcycly => {
-                            if (deleteMotorcycly?.image?.public_id) {
+                            if (deleteMotorcycly?.images?.public_id) {
                                 await cloudinary.v2.uploader.destroy(
-                                    car.image.public_id,
+                                    deleteMotorcycly.images.public_id,
                                     async (err) => {
                                         if (err) {
                                             throw err;
@@ -119,10 +119,10 @@ const categoryCtrl = {
                             }
                         })
 
-                        deleteWaterTransports.forEach(async deleteWaterTransports => {
-                            if (deleteWaterTransports?.image?.public_id) {
+                        deleteWaterTransports.forEach(async deleteWaterTransport => {
+                            if (deleteWaterTransport?.images?.public_id) {
                                 await cloudinary.v2.uploader.destroy(
-                                    car.image.public_id,
+                                    deleteWaterTransport.images.public_id,
                                     async (err) => {
                                         if (err) {
                                             throw err;
@@ -139,17 +139,18 @@ const categoryCtrl = {
                         await SparePartsAndGoods.deleteMany({ subCategoryId: subCategory._id });
                         await Motorcycle.deleteMany({ subCategoryId: subCategory._id });
                         await WaterTransport.deleteMany({ subCategoryId: subCategory._id });
+                        await SubCategory.deleteMany({ categoryId: categoryId })
                     })
 
 
-                    const deletedCategory = Category.deleteMany(categoryId)
+                    const deletedCategory = await Category.findByIdAndDelete(categoryId)
                     return res.status(200).send({ message: "Deleted Category", category: deletedCategory })
                 } else {
                     return res.status(405).send({ message: "Not allowed" });
                 }
             } else {
                 if (req.userIsAdmin) {
-                    const deletedCategory = Category.deleteMany(categoryId)
+                    const deletedCategory = await Category.findByIdAndDelete(categoryId)
                     return res.status(200).send({ message: "Deleted Category", category: deletedCategory })
                 } else {
                     return res.status(405).send({ message: "Not allowed" });
@@ -157,9 +158,9 @@ const categoryCtrl = {
             }
         } catch (error) {
             res.status(503).send({ message: error.message });
-            console.log(error.message);
+            console.log(error);
         }
-    }
+    },
 }
 
 module.exports = categoryCtrl;
