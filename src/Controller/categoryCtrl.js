@@ -9,17 +9,13 @@ const WaterTransport = require('../Model/waterTransportModel');
 
 const categoryCtrl = {
     addCategory: async (req, res) => {
-        try {
-            console.log(req.body.title);
-            
+        try {            
             if (!req.body.title) {
                 return res.status(404).send({ message: "Title is required!" })
             }
-
-            console.log(req.userIsAdmin);
             
             if (req.userIsAdmin) {
-                const newCategory = await Category.create(title);
+                const newCategory = await Category.create(req.body);
                 return res.status(201).send({ message: "Category created!", category: newCategory })
             }
         } catch (error) {
@@ -28,18 +24,21 @@ const categoryCtrl = {
         }
     },
 
-    // getAllCategory: async (req, res) => {
-    //     try {
-            
-    //     } catch (error) {
-    //         console.log(error);
-    //         res.status(503).send({message: error.message})            
-    //     }
-    // },
+    getAllCategory: async (req, res) => {
+        try {
+            let categorys = await Category.find()
+
+            res.status(200).send({ message: "All category", categorys })
+        } catch (error) {
+            console.log(error);
+            res.status(503).send({message: error.message})            
+        }
+    },
     deleteCategory: async (req, res) => {
         try {
             const { categoryId } = req.params;
-            const subCategories = await SubCategory.find({ categoryId: categoryId })
+            const subCategories = await Category.findOne({ _id: categoryId })
+            
             if (subCategories) {
                 if (req.userIsAdmin) {
                     subCategories.forEach(async subCategory => {
