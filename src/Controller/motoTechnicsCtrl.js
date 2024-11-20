@@ -2,7 +2,7 @@ const Motorcycle = require('../Model/motoTechnicsModel');
 const cloudinary = require('cloudinary');
 const fs = require('fs');
 
-// cloudinary config
+// Cloudinary config
 cloudinary.config({
     cloud_name: process.env.CLOUD_NAME,
     api_key: process.env.CLOUD_API_KEY,
@@ -10,7 +10,9 @@ cloudinary.config({
 });
 
 const removeTemp = (path) => {
-    fs.unlinkSync(path);
+    fs.unlink(path, (err) => {
+        if (err) console.error(`Failed to delete temporary file: ${path}`, err);
+    });
 };
 
 const motoTechnicsCtrl = {
@@ -23,7 +25,9 @@ const motoTechnicsCtrl = {
             }
 
             if (req.files && req.files.images) {
-                const { images } = req.files;
+                let { images } = req.files;
+                images = Array.isArray(images) ? images : [images];
+
                 const uploadPromises = images.map(image =>
                     cloudinary.v2.uploader.upload(image.tempFilePath, { folder: "AvtoelonBeta" })
                 );
@@ -42,8 +46,8 @@ const motoTechnicsCtrl = {
 
             res.status(201).send({ message: 'Motorcycle created successfully', Moto: addMoto });
         } catch (error) {
-            console.error(error);
-            res.status(500).send({ message: error.message || 'Server error occurred' });
+            console.error('Error in addMoto:', error);
+            res.status(500).send({ message: 'Failed to add motorcycle. Please try again later.' });
         }
     },
 
@@ -52,8 +56,8 @@ const motoTechnicsCtrl = {
             const motorcycles = await Motorcycle.find();
             res.status(200).send({ message: "All motorcycles", motorcycles });
         } catch (error) {
-            console.error(error);
-            res.status(500).send({ message: error.message || 'Server error occurred' });
+            console.error('Error in getAllMoto:', error);
+            res.status(500).send({ message: 'Failed to fetch motorcycles. Please try again later.' });
         }
     },
 
@@ -68,8 +72,8 @@ const motoTechnicsCtrl = {
 
             res.status(200).json({ message: "Motorcycle info", motorcycle });
         } catch (error) {
-            console.error(error);
-            res.status(500).send({ message: error.message || 'Server error occurred' });
+            console.error('Error in getOneMoto:', error);
+            res.status(500).send({ message: 'Failed to fetch motorcycle. Please try again later.' });
         }
     },
 
@@ -77,16 +81,25 @@ const motoTechnicsCtrl = {
         try {
             const { id } = req.params;
 
-            const deletedMoto = await Motorcycle.findByIdAndDelete(id);
+            const motorcycle = await Motorcycle.findById(id);
 
-            if (!deletedMoto) {
+            if (!motorcycle) {
                 return res.status(404).json({ message: "Motorcycle not found" });
             }
 
-            res.status(200).json({ message: "Deleted successfully", motorcycle: deletedMoto });
+            if (motorcycle.images && motorcycle.images.length > 0) {
+                const deletePromises = motorcycle.images.map(image =>
+                    cloudinary.v2.uploader.destroy(image.public_id)
+                );
+                await Promise.all(deletePromises);
+            }
+
+            await Motorcycle.findByIdAndDelete(id);
+
+            res.status(200).json({ message: "Deleted successfully", motorcycle });
         } catch (error) {
-            console.error(error);
-            res.status(500).send({ message: error.message || 'Server error occurred' });
+            console.error('Error in deleteMoto:', error);
+            res.status(500).send({ message: 'Failed to delete motorcycle. Please try again later.' });
         }
     }
 };
