@@ -101,6 +101,54 @@ const motoTechnicsCtrl = {
             console.error('Error in deleteMoto:', error);
             res.status(500).send({ message: 'Failed to delete motorcycle. Please try again later.' });
         }
+    },
+
+    updateMoto: async (req, res) => {
+        try {
+            const { id } = req.params;
+            const { author_id, subCategoryId, bodyType, year, price, region, city, phoneNumber } = req.body;
+
+            const motorcycle = await Motorcycle.findById(id);
+            if (!motorcycle) {
+                return res.status(404).json({ message: "Motorcycle not found" });
+            }
+
+            if (!author_id || !subCategoryId || !bodyType || !year || !price || !region || !city || !phoneNumber) {
+                return res.status(400).json({ message: "Please fill in all required fields!" });
+            }
+
+            let updatedImages = motorcycle.images;
+            if (req.files && req.files.images) {
+                let { images } = req.files;
+                images = Array.isArray(images) ? images : [images];
+
+                if (motorcycle.images && motorcycle.images.length > 0) {
+                    const deletePromises = motorcycle.images.map(image =>
+                        cloudinary.v2.uploader.destroy(image.public_id)
+                    );
+                    await Promise.all(deletePromises);
+                }
+
+                const uploadPromises = images.map(image =>
+                    cloudinary.v2.uploader.upload(image.tempFilePath, { folder: "AvtoelonBeta" })
+                );
+                const uploadResults = await Promise.all(uploadPromises);
+
+                updatedImages = uploadResults.map(upload => ({
+                    url: upload.secure_url,
+                    public_id: upload.public_id
+                }));
+
+                images.forEach(image => removeTemp(image.tempFilePath));
+            }
+
+            const updatedMoto = await Motorcycle.findByIdAndUpdate(id, req.body, { new: true });
+
+            res.status(200).json({ message: "Motorcycle updated successfully", motorcycle: updatedMoto });
+        } catch (error) {
+            console.error('Error in updateMoto:', error);
+            res.status(500).send({ message: 'Failed to update motorcycle. Please try again later.' });
+        }
     }
 };
 
