@@ -57,30 +57,7 @@ const subCategoryCtrl = {
     },
     deleteSubCategory: async (req, res) => {
         try {
-            const { subCategoryId } = req.params;
-            const subCategory = await SubCategory.findOne({ _id: subCategoryId });
-
-            if (subCategory) {
-                subCategory.forEach(async item => {
-                    if (item?.image?.public_id) {
-                        await cloudinary.v2.uploader.destroy(
-                            item.image.public_id,
-                            async (err) => {
-                                if (err) {
-                                    throw err;
-                                }
-                            }
-                        );
-                        await subCategory.findByIdAndDelete(item._id)
-                    }
-                })
-            } else {
-                return res.status(404).send({ message: "Not found category!" })
-            }
-
-            await subCategory.deleteMany({ _id: subCategoryId });
-
-            res.status(200).send({ message: "Deleted sub category!", subCategory })
+            
         } catch (error) {
             res.status(503).send({ message: error.message });
             console.log(error.message);
