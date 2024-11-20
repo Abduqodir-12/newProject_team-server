@@ -1,29 +1,17 @@
 const SubCategory = require('../Model/subCategory');
-const cloudinary = require('cloudinary')
-
-
-cloudinary.config({
-    cloud_name: process.env.CLOUT_NAME,
-    api_key: process.env.CLOUT_API_KEY,
-    api_secret: process.env.CLOUT_API_SECRET
-})
-
-const revomeTemp = (path) => {
-    fs.unlink(path, err => {
-        if (err) throw err
-    })
-}
 
 const subCategoryCtrl = {
     addSubCategory: async (req, res) => {
         try {
             if (!req.body.title) {
-                return res.status(404).send({ message: "Title is required!" })
+                return res.status(404).send({ message: "Title is required!" });
             }
 
             if (req.userIsAdmin) {
                 const newSubCategory = await SubCategory.create(req.body);
-                return res.status(201).send({ message: "sub Category created!", SubCategory: newSubCategory })
+                return res.status(201).send({ message: "SubCategory created!", SubCategory: newSubCategory });
+            } else {
+                return res.status(403).send({ message: "Access denied. Admin privileges required." });
             }
         } catch (error) {
             res.status(503).send({ message: error.message });
@@ -32,23 +20,25 @@ const subCategoryCtrl = {
     },
     updateSubCategory: async (req, res) => {
         try {
-            const { id } = req.params
+            const { id } = req.params;
             const { title } = req.body;
 
-            const subCategory = await SubCategory.findById(id)
+            const subCategory = await SubCategory.findById(id);
 
             if (!subCategory) {
-                return res.status(404).send({ message: "Not found SubCategory" })
+                return res.status(404).send({ message: "SubCategory not found!" });
             }
 
             if (req.userIsAdmin) {
-                const updateSubCategory = await Category.findByIdAndUpdate(
+                const updateSubCategory = await SubCategory.findByIdAndUpdate(
                     id,
                     { title },
                     { new: true }
-                )
+                );
 
-                return res.status(200).send({ message: "Sub category Updated!", subCategory: updateSubCategory })
+                return res.status(200).send({ message: "SubCategory updated!", subCategory: updateSubCategory });
+            } else {
+                return res.status(403).send({ message: "Access denied. Admin privileges required." });
             }
         } catch (error) {
             res.status(503).send({ message: error.message });
@@ -57,17 +47,16 @@ const subCategoryCtrl = {
     },
     deleteSubCategory: async (req, res) => {
         try {
-            const { subCategoryId } = req.params;
+            const { id } = req.params;
 
-            const subCategory = await SubCategory.findById({_id: subCategoryId});
-    
+            const subCategory = await SubCategory.findById(id);
+
             if (!subCategory) {
                 return res.status(404).send({ message: "SubCategory not found!" });
             }
-    
+
             if (req.userIsAdmin) {
-                await SubCategory.findByIdAndDelete({_id: subCategoryId});
-    
+                await SubCategory.findByIdAndDelete(id);
                 return res.status(200).send({ message: "SubCategory deleted successfully!" });
             } else {
                 return res.status(403).send({ message: "Access denied. Admin privileges required." });
@@ -76,16 +65,16 @@ const subCategoryCtrl = {
             console.log(error.message);
             res.status(503).send({ message: error.message });
         }
-    },    
+    },
     getOneSubCategory: async (req, res) => {
         try {
-            const { subCategoryId } = req.params
+            const { subCategoryId } = req.params;
             const getOneSubCategory = await SubCategory.findOne({ _id: subCategoryId });
             if (!getOneSubCategory) {
-                return res.status(404).send({ message: "Not found category!" })
+                return res.status(404).send({ message: "SubCategory not found!" });
             }
 
-            res.status(200).send({ message: "Found Category", category: getOneSubCategory })
+            res.status(200).send({ message: "SubCategory found!", subCategory: getOneSubCategory });
         } catch (error) {
             console.log(error.message);
             res.status(503).send({ message: error.message });
@@ -93,13 +82,13 @@ const subCategoryCtrl = {
     },
     getAllSubCategory: async (req, res) => {
         try {
-            const subCategories = await SubCategory.find()
-            res.status(200).send({ message: "Categories", subCategories })
+            const subCategories = await SubCategory.find();
+            res.status(200).send({ message: "SubCategories retrieved!", subCategories });
         } catch (error) {
             console.log(error.message);
             res.status(503).send({ message: error.message });
         }
     }
-}
+};
 
-module.exports = subCategoryCtrl
+module.exports = subCategoryCtrl;
