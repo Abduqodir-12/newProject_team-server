@@ -161,6 +161,32 @@ const categoryCtrl = {
             console.log(error);
         }
     },
+    updateCategory: async (req, res) => {
+        try {
+            const { categoryId } = req.params;
+            const { title } = req.body;
+    
+            if (!title) {
+                return res.status(400).send({ message: "Title is required!" });
+            }
+    
+            const category = await Category.findById(categoryId);
+            if (!category) {
+                return res.status(404).send({ message: "Category not found!" });
+            }
+    
+            if (req.userIsAdmin) {
+                const updatedCategory = await Category.findByIdAndUpdate(categoryId, { title }, { new: true });
+    
+                return res.status(200).send({message: "Category updated successfully!", category: updatedCategory});
+            } else {
+                return res.status(403).send({ message: "Access denied. Admin privileges required." });
+            }
+        } catch (error) {
+            console.log(error);
+            res.status(503).send({ message: error.message });
+        }
+    }    
 }
 
 module.exports = categoryCtrl;
