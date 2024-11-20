@@ -57,12 +57,26 @@ const subCategoryCtrl = {
     },
     deleteSubCategory: async (req, res) => {
         try {
-            
+            const { subCategoryId } = req.params;
+
+            const subCategory = await SubCategory.findById({_id: subCategoryId});
+    
+            if (!subCategory) {
+                return res.status(404).send({ message: "SubCategory not found!" });
+            }
+    
+            if (req.userIsAdmin) {
+                await SubCategory.findByIdAndDelete({_id: subCategoryId});
+    
+                return res.status(200).send({ message: "SubCategory deleted successfully!" });
+            } else {
+                return res.status(403).send({ message: "Access denied. Admin privileges required." });
+            }
         } catch (error) {
-            res.status(503).send({ message: error.message });
             console.log(error.message);
+            res.status(503).send({ message: error.message });
         }
-    },
+    },    
     getOneSubCategory: async (req, res) => {
         try {
             const { subCategoryId } = req.params
