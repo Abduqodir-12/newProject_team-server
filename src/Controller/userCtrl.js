@@ -2,9 +2,6 @@ const bcrypt = require('bcrypt')
 const JWT = require('jsonwebtoken')
 const User = require('../Model/userModel')
 const Transport = require('../Model/transportModel')
-const SpacialConstruction = require('../Model/spacialConstructionModel')
-const RepairServices = require('../Model/repairServices')
-const SparePartsAndGoods = require('../Model/sparePertsAndGoodModel')
 
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 
@@ -102,81 +99,37 @@ const userCtrl = {
     deleteUser: async (req, res) => {
         try {
             const { userId } = req.params;
-
+    
             if (userId == req.user._id || req.userIsAdmin == "Admin") {
                 const deletedUser = await User.findByIdAndDelete(userId);
-                const userTransports = await Transport.find({ author_id: userId })
-                const userSpacialConstructions = await SpacialConstruction.find({ author_id: userId })
-                const userRepairServices = await RepairServices.find({ author_id: userId })
-                const userSparePartsAndGoods = await SparePartsAndGoods.find({ author_id: userId })
-
-                userTransports.forEach(async userTransport => {
-                    if (userTransport?.image?.public_id) {
-                        await cloudinary.v2.uploader.destroy(
-                            car.image.public_id,
-                            async (err) => {
-                                if (err) {
-                                    throw err;
-                                }
-                            }
-                        );
-                        await Transport.findByIdAndDelete(userTransport._id)
-                    }
-                })
-
-                userSpacialConstructions.forEach(async SpacialConstruction => {
-                    if (SpacialConstruction?.image?.public_id) {
-                        await cloudinary.v2.uploader.destroy(
-                            car.image.public_id,
-                            async (err) => {
-                                if (err) {
-                                    throw err;
-                                }
-                            }
-                        );
-                        await SpacialConstruction.findByIdAndDelete(SpacialConstruction._id)
-                    }
-                })
-
-                userRepairServices.forEach(async userRepairService => {
-                    if (userRepairService?.image?.public_id) {
-                        await cloudinary.v2.uploader.destroy(
-                            car.image.public_id,
-                            async (err) => {
-                                if (err) {
-                                    throw err;
-                                }
-                            }
-                        );
-                        await RepairServices.findByIdAndDelete(userRepairService._id)
-                    }
-                })
-
-                userSparePartsAndGoods.forEach(async sparePartsAndGood => {
-                    if (sparePartsAndGood?.image?.public_id) {
-                        await cloudinary.v2.uploader.destroy(
-                            car.image.public_id,
-                            async (err) => {
-                                if (err) {
-                                    throw err;
-                                }
-                            }
-                        );
-                        await RepairServices.findByIdAndDelete(sparePartsAndGood._id)
-                    }
-                })
-
+    
                 if (!deletedUser) {
-                    return res.status(404).send({ message: "Not found" });
+                    return res.status(404).send({ message: "User not found" });
                 }
-
-                return res.status(200).send({ message: "Deleted succesfully", deletedUser });
+    
+                const userTransports = await Transport.find({ author_id: userId });
+    
+                for (const userTransport of userTransports) {
+                    if (userTransport?.images?.public_id) {
+                        try {
+                            await cloudinary.v2.uploader.destroy(userTransport.image.public_id);
+                        } catch (err) {
+                            console.error("Error deleting image from Cloudinary:", err);
+                        }
+                    }
+    
+                    await Transport.findByIdAndDelete(userTransport._id);
+                }
+    
+                return res.status(200).send({ message: "Deleted successfully", deletedUser });
             }
+    
             res.status(405).send({ message: "Not allowed" });
         } catch (error) {
-            res.status(503).send(error.message);
+            console.error("Error in deleteUser:", error);
+            res.status(503).send({ message: "Server error: " + error.message });
         }
-    },
+    }    
 }
 
 module.exports = userCtrl

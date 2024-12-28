@@ -10,48 +10,51 @@ cloudinary.config({
 
 const removeTemp = (path) => {
     fs.unlink(path, err => {
-        if (err) throw err;
-    });
+        if (err) throw err
+    })
 };
 
 const transportCtrl = {
     createTransport: async (req, res) => {
         try {
-            const { author_id, year, price, color } = req.body;
-            const { images } = req.file;
-
-            if (!author_id || !year || !price || !color) {
-                return res.status(400).json({ message: "All required fields must be filled." });
+            const { author_id, year, price, color, nameTransport } = req.body;
+            const images = req.files?.images;
+    
+            if (!author_id || !year || !price || !color || !nameTransport) {
+                return res.status(400).send({ message: "All required fields (author_id, year, price, color, nameTransport) must be filled." });
             }
-
-            const result = await cloudinary.v2.uploader.upload(
-                images.tempFilePath,
-                {
-                    folder: "Albom",
-                }
-            );
-
-            removeTemp(images.tempFilePath);
-
+            if (!images || !images.tempFilePath) {
+                return res.status(400).send({ message: "Images must be uploaded." });
+            }
+    
+            const result = await cloudinary.v2.uploader.upload(images.tempFilePath, {
+                folder: "Albom",
+            });
+    
+            if (typeof removeTemp === "function") {
+                removeTemp(images.tempFilePath);
+            }
+    
             const newTransport = new Transport({
                 author_id,
                 year,
                 price,
                 color,
-                image: {
+                nameTransport, 
+                images: {
                     url: result.secure_url,
-                    public_id: result.public_id
-                }
+                    public_id: result.public_id,
+                },
             });
-
+    
             await newTransport.save();
-
+    
             res.status(201).send({ message: "Successfully created", transport: newTransport });
         } catch (error) {
             console.error(error);
             res.status(503).send({ message: error.message });
         }
-    },
+    },    
 
     getAllTransport: async (req, res) => {
         try {
@@ -65,12 +68,12 @@ const transportCtrl = {
 
     getOneTransport: async (req, res) => {
         try {
-            const {id} = req.params;
+            const { id } = req.params;
             const transport = await Transport.findById(id)
-            res.status(200).send({message: 'Get One', transport})
+            res.status(200).send({ message: 'Get One', transport })
         } catch (error) {
             console.log(error);
-            res.status(503).send({message: error.message})            
+            res.status(503).send({ message: error.message })
         }
     }
 };

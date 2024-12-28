@@ -7,6 +7,10 @@ const transportSchema = new mongoose.Schema(
             ref: "User",
             required: true
         },
+        nameTransport: {
+            type: String,
+            required: true
+        },
         year: {
             type: Number,
             required: true
