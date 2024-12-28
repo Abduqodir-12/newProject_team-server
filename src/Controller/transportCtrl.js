@@ -41,10 +41,7 @@ const transportCtrl = {
                 price,
                 color,
                 nameTransport, 
-                images: {
-                    url: result.secure_url,
-                    public_id: result.public_id,
-                },
+                images: images.tempFilePath
             });
     
             await newTransport.save();
