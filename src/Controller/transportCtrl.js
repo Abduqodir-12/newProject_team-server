@@ -18,40 +18,47 @@ const transportCtrl = {
     createTransport: async (req, res) => {
         try {
             const { author_id, year, price, color, nameTransport } = req.body;
-            const images = req.files?.images;
-
+            const images = req.files?.images[0];
+            console.log(req.files);
+    
             if (!author_id || !year || !price || !color || !nameTransport) {
-                return res.status(400).send({ message: "All required fields (author_id, year, price, color, nameTransport) must be filled." });
+                return res.status(400).send({
+                    message: "All required fields (author_id, year, price, color, nameTransport) must be filled.",
+                });
             }
+    
             if (!images || !images.tempFilePath) {
                 return res.status(400).send({ message: "Images must be uploaded." });
             }
-
+    
             const result = await cloudinary.v2.uploader.upload(images.tempFilePath, {
                 folder: "Albom",
             });
-
+    
             if (typeof removeTemp === "function") {
                 removeTemp(images.tempFilePath);
             }
-
+    
             const newTransport = new Transport({
                 author_id,
                 year,
                 price,
                 color,
                 nameTransport,
-                images: images.tempFilePath
+                images: {
+                    url: result.secure_url, 
+                    public_id: result.public_id, 
+                },
             });
-
+    
             await newTransport.save();
-
+    
             res.status(201).send({ message: "Successfully created", transport: newTransport });
         } catch (error) {
-            console.error(error);
-            res.status(503).send({ message: error.message });
+            console.error("Error in createTransport:", error);
+            res.status(503).send({ message: "Server error: " + error.message });
         }
-    },
+    },    
 
     getAllTransport: async (req, res) => {
         try {
@@ -66,6 +73,7 @@ const transportCtrl = {
     getOneTransport: async (req, res) => {
         try {
             const { id } = req.params;
+            
             const transport = await Transport.findById(id)
             res.status(200).send({ message: 'Get One', transport })
         } catch (error) {

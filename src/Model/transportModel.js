@@ -24,7 +24,7 @@ const transportSchema = new mongoose.Schema(
             required: true
         },
         images: {
-            type: String,
+            type: Object,
             required: true
         }
     },
